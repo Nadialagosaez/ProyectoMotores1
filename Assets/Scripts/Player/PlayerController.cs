@@ -81,22 +81,21 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyHeadBob()
     {
-        // Solo aplicamos el efecto si estamos en el suelo y moviéndonos
+        
         if (!controller.isGrounded || moveInput.magnitude == 0)
         {
-            // Resetear suavemente la cámara a su posición original si nos detenemos
+            
             bobTimer = 0;
             Vector3 newPos = new Vector3(cameraTransform.localPosition.x, Mathf.Lerp(cameraTransform.localPosition.y, defaultCameraY, Time.deltaTime * 10f), cameraTransform.localPosition.z);
             cameraTransform.localPosition = newPos;
             return;
         }
 
-        // Calculamos la oscilación usando Seno
+        //oscilacion
         bobTimer += Time.deltaTime * bobFrequency;
         
         float bobOffsetY = Mathf.Sin(bobTimer) * bobAmount;
         
-        // Aplicamos la nueva posición a la cámara
         cameraTransform.localPosition = new Vector3(
             cameraTransform.localPosition.x,
             defaultCameraY + bobOffsetY,
