@@ -1,37 +1,49 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInteractions : MonoBehaviour
 {
-    [SerializeField] private WorldState worldState; 
+    public InputActionReference interactAction; 
 
+    private void OnEnable() => interactAction.action.Enable();
+    private void OnDisable() => interactAction.action.Disable();
+    
     private void OnTriggerEnter(Collider other)
     {
-        // Si toca un objeto interactuable (ej. una nota)
-        // if (other.CompareTag("NoteWall"))
-        // {
-        //     worldState.noteWall = true;
-        //     Debug.Log("Estado actualizado: Nota leída.");
-        // }
+        WorldSceneManager.Instance.ProcessInteraction(other.tag);
 
-        // Si toca un trigger de cambio de zona
-        if (other.CompareTag("Door1"))
+        if (other.CompareTag("Key"))
         {
-            // En lugar de cargar aquí, llamamos al controlador central
-            // que creamos en la respuesta anterior
-            Debug.Log("Entrando a la siguiente habitación...");
-            string scene = NextScene();
-            WorldSceneManager.Instance.ChangeRoom(scene);
+            Destroy(other.gameObject);
         }
     }
 
-    private string NextScene()
+
+
+    private void Update()
     {
-        return "Hab2";
-        // Aquí es donde ocurre la magia del ScriptableObject
-        // if (worldState.noteWall)
-        // {
-        //     return "Habitacion_Con_Secreto";
-        // }
-        // return "Habitacion_Normal";
+        
+    if (interactAction != null && interactAction.action.WasPressedThisFrame())
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            //quitar para entrega final
+            Debug.Log("He tocado un objeto llamado: " + hit.collider.name + " con el Tag: " + hit.collider.tag);
+
+            if (hit.collider.CompareTag("FinalNote"))
+            {
+                WorldSceneManager.Instance.ProcessInteraction("FinalNote");
+            }
+
+            //aquí tambien iria la lógica para abrir las puertas con alguna animación
+            
+        }
+        else 
+        {
+            //quitar para entrega final
+            Debug.Log("El rayo no ha tocado nada.");
+        }
     }
+}
 }

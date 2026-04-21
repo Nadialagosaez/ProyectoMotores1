@@ -9,63 +9,149 @@ public class WorldSceneManager : MonoBehaviour
 
     void Awake()
     {
+         if (SceneManager.sceneCount == 1) 
+            {
+                StartCoroutine(LoadSceneWithDelay("Hab1"));
+            }
+
         if (Instance == null) 
-    {
-        Instance = this;
-        // LIMPIA LOS DATOS AL DARLE AL PLAY
-        if (worldState != null) worldState.ResetState(); 
-    }
-    else 
-    {
-        Destroy(gameObject);
-    }
-    }
-
-   public void ChangeRoom(string newSceneName)
-{
-    if (newSceneName == worldState.currentRoomName) return;
-    
-    StartCoroutine(LoadSceneRoutine(newSceneName));
-}
-
-private IEnumerator LoadSceneRoutine(string sceneName)
-{
-    AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-    
-    while (!loadOp.isDone)
-    {
-        yield return null; 
-    }
-
-    // ⚠️ PASO EXTRA: Esperar un frame para que los objetos se inicialicen
-    yield return new WaitForEndOfFrame();
-
-    // Buscamos el spawn
-    GameObject spawn = GameObject.Find("SpawnPoint");
-    
-    if (spawn != null) 
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        
-        if (player != null)
-        {
-            // ⚠️ FIX PARA CHARACTER CONTROLLER:
-            CharacterController cc = player.GetComponent<CharacterController>();
-            if (cc != null) cc.enabled = false; // Lo apagamos
-
-            player.transform.position = spawn.transform.position;
-            player.transform.rotation = spawn.transform.rotation;
-
-            if (cc != null) cc.enabled = true; // Lo encendemos
-            
-            Debug.Log("Jugador teletransportado a: " + spawn.transform.position);
+        { 
+            Instance = this; 
+            if (worldState != null) worldState.ResetState(); 
         }
-    }
-    else 
-    {
-        Debug.LogError("¡No encontré el SpawnPoint! Asegúrate de que se llame exactamente así.");
+        else Destroy(gameObject);
     }
 
-    worldState.currentRoomName = sceneName;
-}
+    void Start()
+    {
+        
+    }
+
+
+    private IEnumerator LoadSceneWithDelay(string sceneName)
+    {
+        yield return new WaitForEndOfFrame();
+        StartCoroutine(LoadSceneRoutine(sceneName));
+    }
+
+    public void ProcessInteraction(string tag)
+    {
+        string nextScene = "";
+
+        switch (tag)
+        {
+            case "Door1": 
+                Debug.Log("Saliendo Hab1");
+                nextScene = CalculateNextSceneFromHab1();
+                break;
+
+            case "ReturnToHab1":
+                Debug.Log("Checkeo si vuelvo a Hab1");
+                nextScene = HandleReturnLogic();
+                break;
+
+            case "ZoneCheck":
+                worldState.SetZoneCheck(true);
+                Debug.Log("Zona investigada");
+                return;
+
+            case "Key":
+                worldState.SetHasKey(true);
+                Debug.Log("Tengo llave");
+                return; 
+
+            case "FinalNote":
+                worldState.SetMsjRead(true);
+                Debug.Log("Mensaje leido");
+                return; 
+        }
+
+        if (!string.IsNullOrEmpty(nextScene)) 
+            StartCoroutine(LoadSceneRoutine(nextScene));
+    }
+
+    private string CalculateNextSceneFromHab1()
+    {
+        if (worldState.hasKey)
+        {
+            return "Hab5";
+            
+        } else if (worldState.backFromHab3) return "Hab4";
+        
+        return "Hab2";
+    }
+
+    private string HandleReturnLogic()
+    {
+        string current = worldState.currentRoomName;
+
+        if (current == "Hab2")
+        {
+            //si pisó la zona de investigacion va a la 3 sino vuelve al inicio
+            return worldState.zoneCheck ? "Hab3" : "Hab1";
+        }
+
+        if (current == "Hab3")
+        {
+            worldState.SetBackFromHab3(true);
+            return "Hab1";
+        }
+
+        if (current == "Hab4")
+        {
+            //con llave se activa la 5 sino vuelve a la 1
+            return worldState.hasKey ? "Hab5" : "Hab1";
+        }
+
+        if (current == "Hab5")
+        {
+            if (worldState.msjRead)
+            {
+                Debug.Log("Llegaste al final!");
+                Application.Quit(); 
+                return "";
+            }
+            //sin leer nota vuelvo a 1
+            return "Hab1";
+        }
+
+        return "Hab1";
+    }
+
+    private IEnumerator LoadSceneRoutine(string sceneName)
+    {
+        if (string.IsNullOrEmpty(sceneName)) yield break;
+        
+        string previousScene = worldState.currentRoomName;
+
+        //carga aditiva de escena
+        AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        while (!loadOp.isDone) yield return null;
+        
+        yield return new WaitForEndOfFrame();
+
+        //teletransporter
+        GameObject spawn = GameObject.Find("SpawnPoint" + sceneName);
+        if (spawn != null) 
+        {
+            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            if (player != null)
+            {
+                CharacterController cc = player.GetComponent<CharacterController>();
+                if (cc != null) cc.enabled = false; // lo deshabilito para el transporter
+
+                player.transform.position = spawn.transform.position;
+                player.transform.rotation = spawn.transform.rotation;
+
+                if (cc != null) cc.enabled = true;
+            }
+        }
+
+        //quito escena anterior
+      if (!string.IsNullOrEmpty(previousScene) && previousScene != sceneName)
+        {
+            SceneManager.UnloadSceneAsync(previousScene);
+        }
+        worldState.SetCurrentRoomName(sceneName);
+    }
 }
