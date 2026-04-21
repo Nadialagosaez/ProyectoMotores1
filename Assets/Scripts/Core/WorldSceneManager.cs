@@ -22,11 +22,6 @@ public class WorldSceneManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-    void Start()
-    {
-        
-    }
-
 
     private IEnumerator LoadSceneWithDelay(string sceneName)
     {
@@ -75,7 +70,7 @@ public class WorldSceneManager : MonoBehaviour
         if (worldState.hasKey)
         {
             return "Hab5";
-            
+
         } else if (worldState.backFromHab3) return "Hab4";
         
         return "Hab2";
