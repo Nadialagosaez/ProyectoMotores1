@@ -10,11 +10,14 @@ public class PlayerInteractions : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
+        if (!other.CompareTag("Enemy"))
+        {    
         WorldSceneManager.Instance.ProcessInteraction(other.tag);
 
         if (other.CompareTag("Key"))
         {
             Destroy(other.gameObject);
+        }
         }
     }
 
@@ -22,7 +25,7 @@ public class PlayerInteractions : MonoBehaviour
 
     private void Update()
     {
-        
+
     if (interactAction != null && interactAction.action.WasPressedThisFrame())
     {
         Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());

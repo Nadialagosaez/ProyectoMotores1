@@ -10,6 +10,7 @@ TagManager:
   - ReturnToHab1
   - ZoneCheck
   - FinalNote
+  - Enemy
   layers:
   - Default
   - TransparentFX
