@@ -1,10 +1,13 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerSanity : MonoBehaviour
 {
     [Header("Ajustes de Cordura")]
     public float maxSanity = 100f;
     private float currentSanity;
+
    
 
     void Awake()
@@ -29,7 +32,10 @@ public class PlayerSanity : MonoBehaviour
 
     private void GameOver()
     {
-        Debug.Log("Perdiste la cordura, sos un ente más del hospital!");
-        //Pantalla derrota
+       enabled = false; 
+    
+        WorldSceneManager.Instance.StartCoroutine(
+        WorldSceneManager.Instance.LoadSceneRoutine("GameOverScene")
+    );
     }
 }
