@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using Microsoft.Unity.VisualStudio.Editor;
 
 public class WorldSceneManager : MonoBehaviour
 {
     public static WorldSceneManager Instance;
     public WorldState worldState; 
+    public ScreenFader fader;
 
     void Awake()
     {
@@ -102,9 +104,7 @@ public class WorldSceneManager : MonoBehaviour
         {
             if (worldState.msjRead)
             {
-                Debug.Log("Llegaste al final!");
-                Application.Quit(); 
-                return "";
+                return "WinScene";
             }
             //sin leer nota vuelvo a 1
             return "Hab1";
@@ -113,11 +113,32 @@ public class WorldSceneManager : MonoBehaviour
         return "Hab1";
     }
 
-    private IEnumerator LoadSceneRoutine(string sceneName)
+    public IEnumerator LoadSceneRoutine(string sceneName)
     {
         if (string.IsNullOrEmpty(sceneName)) yield break;
         
+        if (sceneName == "WinScene")
+        {
+            Debug.Log("Inicia fundido");
+            
+            if (fader != null) 
+                yield return StartCoroutine(fader.FadeOut()); 
+            SceneManager.LoadScene("WinScene"); 
+            yield break; 
+        }
+        
+        if (sceneName == "GameOverScene")
+        {
+            Debug.Log("Inicia fundido");
+            
+            if (fader != null) 
+                yield return StartCoroutine(fader.FadeOut()); 
+            SceneManager.LoadScene("GameOverScene"); 
+            yield break; 
+        }
+      
         string previousScene = worldState.currentRoomName;
+
 
         //carga aditiva de escena
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
@@ -148,5 +169,8 @@ public class WorldSceneManager : MonoBehaviour
             SceneManager.UnloadSceneAsync(previousScene);
         }
         worldState.SetCurrentRoomName(sceneName);
+
+        if (fader != null) yield return StartCoroutine(fader.FadeIn());
+        Debug.Log("Habitación lista, quitando fondo negro");
     }
 }
