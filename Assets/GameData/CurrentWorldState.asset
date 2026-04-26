@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CurrentWorldState
   m_EditorClassIdentifier: Assembly-CSharp::WorldState
   _zoneCheck: 1
-  _backFromHab3: 0
-  _hasKey: 0
-  _msjRead: 0
-  _currentRoomName: Hab3
+  _backFromHab3: 1
+  _hasKey: 1
+  _msjRead: 1
+  _currentRoomName: Hab5

@@ -32,6 +32,6 @@ public class WorldState : ScriptableObject
         _backFromHab3 = false;
         _hasKey = false;
         _msjRead = false;
-        _currentRoomName = "Hab1";
+        _currentRoomName = "";
     }
 }
