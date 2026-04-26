@@ -1,19 +1,19 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using Microsoft.Unity.VisualStudio.Editor;
 
 public class WorldSceneManager : MonoBehaviour
 {
     public static WorldSceneManager Instance;
     public WorldState worldState; 
     public ScreenFader fader;
+    private bool isLoading = false; 
 
     void Awake()
     {
          if (SceneManager.sceneCount == 1) 
             {
-                StartCoroutine(LoadSceneWithDelay("Hab1"));
+                StartCoroutine(LoadSceneRoutine("Hab1"));
             }
 
         if (Instance == null) 
@@ -24,14 +24,7 @@ public class WorldSceneManager : MonoBehaviour
         else Destroy(gameObject);
     }
 
-
-    private IEnumerator LoadSceneWithDelay(string sceneName)
-    {
-        yield return new WaitForEndOfFrame();
-        StartCoroutine(LoadSceneRoutine(sceneName));
-    }
-
-    public void ProcessInteraction(string tag)
+public void ProcessInteraction(string tag)
     {
         string nextScene = "";
 
@@ -78,7 +71,7 @@ public class WorldSceneManager : MonoBehaviour
         return "Hab2";
     }
 
-    private string HandleReturnLogic()
+     private string HandleReturnLogic()
     {
         string current = worldState.currentRoomName;
 
@@ -112,65 +105,72 @@ public class WorldSceneManager : MonoBehaviour
 
         return "Hab1";
     }
-
     public IEnumerator LoadSceneRoutine(string sceneName)
     {
-        if (string.IsNullOrEmpty(sceneName)) yield break;
-        
-        if (sceneName == "WinScene")
+        if (string.IsNullOrEmpty(sceneName) || isLoading) yield break;
+        isLoading = true;
+
+        if (sceneName == "WinScene" || sceneName == "GameOverScene")
         {
-            Debug.Log("Inicia fundido");
-            
             if (fader != null) 
+            {
                 yield return StartCoroutine(fader.FadeOut()); 
-            SceneManager.LoadScene("WinScene"); 
+            }
+            
+            StopAllCoroutines();
+            
+            SceneManager.LoadScene(sceneName);
             yield break; 
         }
-        
-        if (sceneName == "GameOverScene")
-        {
-            Debug.Log("Inicia fundido");
-            
-            if (fader != null) 
-                yield return StartCoroutine(fader.FadeOut()); 
-            SceneManager.LoadScene("GameOverScene"); 
-            yield break; 
-        }
-      
+
+       
         string previousScene = worldState.currentRoomName;
 
-
-        //carga aditiva de escena
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
         while (!loadOp.isDone) yield return null;
         
         yield return new WaitForEndOfFrame();
 
-        //teletransporter
-        GameObject spawn = GameObject.Find("SpawnPoint" + sceneName);
-        if (spawn != null) 
+        HandlePlayerTeleport(sceneName); 
+
+       
+    
+        if (!string.IsNullOrEmpty(previousScene) && previousScene != sceneName)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
+            Scene sceneToUnload = SceneManager.GetSceneByName(previousScene);
+            
+            if (sceneToUnload.isLoaded)
             {
-                CharacterController cc = player.GetComponent<CharacterController>();
-                if (cc != null) cc.enabled = false; // lo deshabilito para el transporter
-
-                player.transform.position = spawn.transform.position;
-                player.transform.rotation = spawn.transform.rotation;
-
-                if (cc != null) cc.enabled = true;
+                yield return SceneManager.UnloadSceneAsync(previousScene);
             }
-        }
-
-        //quito escena anterior
-      if (!string.IsNullOrEmpty(previousScene) && previousScene != sceneName)
-        {
-            SceneManager.UnloadSceneAsync(previousScene);
+            else
+            {
+                Debug.LogWarning("Se intentó descargar " + previousScene + " pero no estaba cargada.");
+            }
         }
         worldState.SetCurrentRoomName(sceneName);
 
+        
         if (fader != null) yield return StartCoroutine(fader.FadeIn());
-        Debug.Log("Habitación lista, quitando fondo negro");
+
+        isLoading = false; 
+    }
+
+   
+    private void HandlePlayerTeleport(string sceneName)
+    {
+        GameObject spawn = GameObject.Find("SpawnPoint" + sceneName);
+        if (spawn == null) return;
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null) return;
+
+        CharacterController cc = player.GetComponent<CharacterController>();
+        if (cc != null) cc.enabled = false; 
+
+        player.transform.position = spawn.transform.position;
+        player.transform.rotation = spawn.transform.rotation;
+
+        if (cc != null) cc.enabled = true;
     }
 }
