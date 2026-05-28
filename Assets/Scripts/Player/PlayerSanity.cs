@@ -5,7 +5,7 @@ using System.Collections;
 public class PlayerSanity : MonoBehaviour
 {
     [Header("Ajustes de Cordura")]
-    public float maxSanity = 100f;
+     [SerializeField] private float maxSanity = 100f;
     private float currentSanity;
 
    

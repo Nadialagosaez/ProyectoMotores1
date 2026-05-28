@@ -14,6 +14,12 @@ public class PlayerInteractions : MonoBehaviour
         {    
         WorldSceneManager.Instance.ProcessInteraction(other.tag);
 
+        // Mostrar mensaje según tag
+        if (MessageManager.Instance != null)
+        {
+            MessageManager.Instance.Show(other.tag);
+        }
+
         if (other.CompareTag("Key"))
         {
             Destroy(other.gameObject);
@@ -34,6 +40,12 @@ public class PlayerInteractions : MonoBehaviour
             //quitar para entrega final
             Debug.Log("He tocado un objeto llamado: " + hit.collider.name + " con el Tag: " + hit.collider.tag);
 
+            // Mostrar mensaje para cualquier objeto tocado
+            if (MessageManager.Instance != null)
+            {
+                MessageManager.Instance.Show(hit.collider.tag);
+            }
+
             if (hit.collider.CompareTag("FinalNote"))
             {
                 WorldSceneManager.Instance.ProcessInteraction("FinalNote");
@@ -46,6 +58,7 @@ public class PlayerInteractions : MonoBehaviour
         {
             //quitar para entrega final
             Debug.Log("El rayo no ha tocado nada.");
+            if (MessageManager.Instance != null) MessageManager.Instance.Show(null);
         }
     }
 }
