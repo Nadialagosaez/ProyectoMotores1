@@ -1543,11 +1543,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1254131567844039870, guid: bdfe7bbc705ba42fb836d0d93cbba587, type: 3}
       propertyPath: probabilidadFalla
-      value: 0.5
+      value: 0.41
       objectReference: {fileID: 0}
     - target: {fileID: 1254131567844039870, guid: bdfe7bbc705ba42fb836d0d93cbba587, type: 3}
       propertyPath: multiplicadorVelocidad
-      value: 200
+      value: 160.8
       objectReference: {fileID: 0}
     - target: {fileID: 1428182436718432948, guid: bdfe7bbc705ba42fb836d0d93cbba587, type: 3}
       propertyPath: m_LocalScale.x

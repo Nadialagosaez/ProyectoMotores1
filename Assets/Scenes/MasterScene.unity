@@ -732,6 +732,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MessageManager
   messagePrefab: {fileID: 528012243778156036}
   uiParent: {fileID: 1636629882}
+  worldState: {fileID: 11400000, guid: 6590dbd48539841f3859b571b2ceabad, type: 2}
   tagMessagesList:
   - tag: Door1
     message: Donde me llevara esta puerta?

@@ -16,6 +16,7 @@ public class MessageManager : MonoBehaviour
     [Header("References")]
     [SerializeField] private GameObject messagePrefab;
     [SerializeField] private Transform uiParent;
+    [SerializeField] private WorldState worldState;
 
     [Header("Messages")]
     [SerializeField] private List<TagMessage> tagMessagesList = new List<TagMessage>();
@@ -73,6 +74,10 @@ public class MessageManager : MonoBehaviour
         if (!string.IsNullOrEmpty(tag) && tagMessages.TryGetValue(tag, out string taggedMsg))
         {
             messageToShow = taggedMsg;
+            if (tag == "Clock" && worldState != null && worldState.hab1Visits > 1)
+            {
+                messageToShow = "Parece que el tiempo no pasa aquí...";
+            }
         }
         else 
         {
@@ -169,6 +174,31 @@ public class MessageManager : MonoBehaviour
         else
         {
             Destroy(go);
+        }
+    }
+
+    public void UpdateTagMessage(string tag, string newMessage)
+    {
+        // Modifico diccionario
+        if (tagMessages.ContainsKey(tag))
+        {
+            tagMessages[tag] = newMessage;
+        }
+        else
+        {
+            tagMessages.Add(tag, newMessage);
+        }
+
+        // Actualizo inspector
+        for (int i = 0; i < tagMessagesList.Count; i++)
+        {
+            if (tagMessagesList[i].tag == tag)
+            {
+                TagMessage updatedStruct = tagMessagesList[i];
+                updatedStruct.message = newMessage;
+                tagMessagesList[i] = updatedStruct;
+                break;
+            }
         }
     }
 }

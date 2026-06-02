@@ -157,6 +157,10 @@ public void ProcessInteraction(string tag)
             {
                 clock.ReiniciarReloj();
             }
+            if (worldState != null) // Asegúrate de tener la referencia a tu WorldState en este script
+            {
+                worldState.IncrementHab1Visits();
+            }
         }
         
         if (fader != null) yield return StartCoroutine(fader.FadeIn());

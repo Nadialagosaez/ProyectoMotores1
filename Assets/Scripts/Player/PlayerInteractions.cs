@@ -14,11 +14,6 @@ public class PlayerInteractions : MonoBehaviour
         {    
         WorldSceneManager.Instance.ProcessInteraction(other.tag);
 
-        // Mostrar mensaje según tag
-        if (MessageManager.Instance != null)
-        {
-            MessageManager.Instance.Show(other.tag);
-        }
 
         if (other.CompareTag("Key"))
         {

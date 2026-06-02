@@ -10,7 +10,6 @@ public class MessageUI : MonoBehaviour
     public void Play(string message)
     {
         if (messageText == null) messageText = GetComponent<TextMeshProUGUI>();
-        // if (messageText == null) messageText = GetComponentInChildren<TextMeshProUGUI>();
         
         if (messageText != null) 
         {

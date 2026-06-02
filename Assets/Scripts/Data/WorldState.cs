@@ -12,12 +12,16 @@ public class WorldState : ScriptableObject
     [Header("Sistema")]
     [SerializeField] private string _currentRoomName; 
 
+    [Header("Contador de Bucles")]
+    [SerializeField] private int _hab1Visits;
+
     
     public bool zoneCheck => _zoneCheck;
     public bool backFromHab3 => _backFromHab3;
     public bool hasKey => _hasKey;
     public bool msjRead => _msjRead;
     public string currentRoomName => _currentRoomName;
+    public int hab1Visits => _hab1Visits;
 
     // setters
     public void SetZoneCheck(bool state) => _zoneCheck = state;
@@ -25,6 +29,7 @@ public class WorldState : ScriptableObject
     public void SetHasKey(bool state) => _hasKey = state;
     public void SetMsjRead(bool state) => _msjRead = state;
     public void SetCurrentRoomName(string name) => _currentRoomName = name;
+    public void IncrementHab1Visits() => _hab1Visits++;
 
     public void ResetState()
     {
@@ -33,5 +38,6 @@ public class WorldState : ScriptableObject
         _hasKey = false;
         _msjRead = false;
         _currentRoomName = "";
+        _hab1Visits = 0;
     }
 }
