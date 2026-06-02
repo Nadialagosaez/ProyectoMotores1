@@ -20,16 +20,20 @@ public class MessageManager : MonoBehaviour
     [Header("Messages")]
     [SerializeField] private List<TagMessage> tagMessagesList = new List<TagMessage>();
     [SerializeField] private string defaultMessage = "Debo encontrar la salida...";
-    [SerializeField] private List<string> noTagMessages = new List<string> { "No hay nada aquí.", "Sigue buscando...", "Todavía nada." };
+    [SerializeField] private List<string> noTagMessages = new List<string> { "No hay nada aquí", "Sigue buscando...", "Todavía nada", "Creo que me vigilan...", "¿Dónde estoy?" };
+
+    [Header("Mensajes de Daño/Cordura")]
+    [SerializeField] private List<string> damageMessages = new List<string> {"¡Déjame en paz!", "¿Qué ha sido eso?", "¡No puedo soportarlo!", "Perderé la cabeza...", "Quien soy?"};
 
     private Dictionary<string, string> tagMessages = new Dictionary<string, string>();
     private Queue<string> messageQueue = new Queue<string>();
     private bool isShowing = false;
     private float messageEndTime = 0f;
 
-    // Control de llamadas sin tag
+    // Controles de repetición
     private bool hasShownDefaultNoTag = false;
     private string lastNoTagMessage = null;
+    private string lastDamageMessage = null; 
 
     void Awake()
     {
@@ -44,7 +48,6 @@ public class MessageManager : MonoBehaviour
             return; 
         }
 
-        // diccionario de tags
         foreach (var tm in tagMessagesList)
         {
             if (!string.IsNullOrEmpty(tm.tag)) 
@@ -56,7 +59,6 @@ public class MessageManager : MonoBehaviour
 
     void Update()
     {
-        // Verificar si el mensaje actual terminó para lanzar el siguiente
         if (isShowing && Time.time >= messageEndTime)
         {
             isShowing = false;
@@ -64,30 +66,23 @@ public class MessageManager : MonoBehaviour
         }
     }
 
-public void Show(string tag)
+    public void Show(string tag)
     {
         string messageToShow;
 
-        // 1. Si llega un tag válido y está en la lista, lo mostramos
         if (!string.IsNullOrEmpty(tag) && tagMessages.TryGetValue(tag, out string taggedMsg))
         {
             messageToShow = taggedMsg;
         }
-        // 2. Si llega nulo, vacío o un tag que no existe
         else 
         {
             if (!hasShownDefaultNoTag)
             {
                 messageToShow = defaultMessage;
                 hasShownDefaultNoTag = true;
-                
-                // Guardo el msj x defecto en la lista 
                 lastNoTagMessage = defaultMessage; 
 
-                if (!noTagMessages.Contains(defaultMessage))
-                {
-                    noTagMessages.Add(defaultMessage);
-                }
+                if (!noTagMessages.Contains(defaultMessage)) noTagMessages.Add(defaultMessage);
             }
             else
             {
@@ -95,24 +90,41 @@ public void Show(string tag)
             }
         }
 
-        messageQueue.Enqueue(messageToShow);
-        
-        // Si no hay nada mostrándose actualmente, forzar a mostrar
-        if (!isShowing)
+        EnqueueAndTryShow(messageToShow);
+    }
+
+    public void ShowDamageMessage()
+    {
+        if (damageMessages == null || damageMessages.Count == 0) return;
+
+        string messageToShow;
+
+        if (damageMessages.Count == 1)
         {
-            DisplayNextMessage();
+            messageToShow = damageMessages[0];
         }
+        else
+        {
+            int index = Random.Range(0, damageMessages.Count);
+            
+            while (damageMessages[index] == lastDamageMessage)
+            {
+                index = Random.Range(0, damageMessages.Count);
+            }
+
+            lastDamageMessage = damageMessages[index];
+            messageToShow = lastDamageMessage;
+        }
+
+        EnqueueAndTryShow(messageToShow);
     }
 
     private string GetRandomNoTagMessage()
     {
         if (noTagMessages == null || noTagMessages.Count == 0) return defaultMessage;
-        
         if (noTagMessages.Count == 1) return noTagMessages[0];
 
         int index = Random.Range(0, noTagMessages.Count);
-        
-        // No repito último mensaje mostrado
         while (noTagMessages[index] == lastNoTagMessage)
         {
             index = Random.Range(0, noTagMessages.Count);
@@ -122,18 +134,22 @@ public void Show(string tag)
         return lastNoTagMessage;
     }
 
+    private void EnqueueAndTryShow(string msg)
+    {
+        messageQueue.Enqueue(msg);
+        if (!isShowing)
+        {
+            DisplayNextMessage();
+        }
+    }
+
     private void DisplayNextMessage()
     {
-        // Si no hay mensajes en la cola, salimos
         if (messageQueue.Count == 0) return;
 
         string msg = messageQueue.Dequeue();
         
-        if (messagePrefab == null)
-        {
-            Debug.LogWarning("MessageManager: messagePrefab no está asignado en el Inspector.");
-            return;
-        }
+        if (messagePrefab == null) return;
 
         if (uiParent == null)
         {
@@ -152,7 +168,6 @@ public void Show(string tag)
         }
         else
         {
-            Debug.LogError("MessageUI no encontrado en el prefab instanciado.");
             Destroy(go);
         }
     }

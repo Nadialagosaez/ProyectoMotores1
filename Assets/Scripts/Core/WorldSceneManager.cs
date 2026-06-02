@@ -150,6 +150,14 @@ public void ProcessInteraction(string tag)
         }
         worldState.SetCurrentRoomName(sceneName);
 
+        if (sceneName == "Hab1")
+        {
+            ClockLoop clock = FindFirstObjectByType<ClockLoop>();
+            if (clock != null)
+            {
+                clock.ReiniciarReloj();
+            }
+        }
         
         if (fader != null) yield return StartCoroutine(fader.FadeIn());
 
