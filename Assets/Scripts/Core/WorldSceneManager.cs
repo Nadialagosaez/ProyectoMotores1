@@ -172,17 +172,40 @@ public void ProcessInteraction(string tag)
     private void HandlePlayerTeleport(string sceneName)
     {
         GameObject spawn = GameObject.Find("SpawnPoint" + sceneName);
-        if (spawn == null) return;
+        if (spawn == null) 
+        {
+            Debug.LogWarning("No se encontró el SpawnPoint para la escena: " + sceneName);
+            return;
+        }
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
-        CharacterController cc = player.GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false; 
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.isKinematic = true; 
+        }
+
+        // Mantén esto por si acaso quedara algún CharacterController viejo en el proyecto
+        // CharacterController cc = player.GetComponent<CharacterController>();
+        // if (cc != null) cc.enabled = false; 
 
         player.transform.position = spawn.transform.position;
         player.transform.rotation = spawn.transform.rotation;
 
-        if (cc != null) cc.enabled = true;
+        // 3. Devolvemos el control al motor de físicas limpiando inercias anteriores
+        //if (cc != null) cc.enabled = true;
+
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            
+            rb.linearVelocity = Vector3.zero;  
+            rb.angularVelocity = Vector3.zero;
+            
+            rb.position = spawn.transform.position;
+            rb.rotation = spawn.transform.rotation;
+        }
     }
 }
