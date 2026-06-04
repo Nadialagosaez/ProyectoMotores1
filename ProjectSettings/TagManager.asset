@@ -12,6 +12,8 @@ TagManager:
   - FinalNote
   - Enemy
   - Clock
+  - Doll
+  - MedicalBox
   layers:
   - Default
   - TransparentFX

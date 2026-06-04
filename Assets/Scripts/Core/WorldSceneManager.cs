@@ -49,6 +49,11 @@ public void ProcessInteraction(string tag)
                 worldState.SetHasKey(true);
                 Debug.Log("Tengo llave");
                 return; 
+            
+            case "Doll":
+                worldState.SetHasDoll(true);
+                Debug.Log("Muñeca recogida, ahora puedes salir de Hab3");
+                return;
 
             case "FinalNote":
                 worldState.SetMsjRead(true);
@@ -77,19 +82,16 @@ public void ProcessInteraction(string tag)
 
         if (current == "Hab2")
         {
-            //si pisó la zona de investigacion va a la 3 sino vuelve al inicio
             return worldState.zoneCheck ? "Hab3" : "Hab1";
         }
 
-        if (current == "Hab3")
+       if (current == "Hab3")
         {
-            worldState.SetBackFromHab3(true);
-            return "Hab1";
+            return worldState.hasDoll ? "Hab1" : "Hab4"; 
         }
 
         if (current == "Hab4")
         {
-            //con llave se activa la 5 sino vuelve a la 1
             return worldState.hasKey ? "Hab5" : "Hab1";
         }
 
