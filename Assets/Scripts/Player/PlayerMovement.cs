@@ -51,7 +51,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y), rb.linearVelocity.z);
+            float jumpVelocity = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
         }
     }
 
