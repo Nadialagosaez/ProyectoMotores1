@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider capsule;
     private Vector3 moveDirection;
     private bool isGrounded;
+    private bool jump = false;
 
     public bool IsGrounded => isGrounded;
     public float CurrentSpeed => new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z).magnitude;
@@ -40,6 +41,11 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         ApplyMovement();
+        
+        if (jump)
+        {
+            ExecuteJump();
+        }
     }
 
     public void SetMoveDirection(Vector3 direction)
@@ -49,12 +55,18 @@ public class PlayerMovement : MonoBehaviour
 
     public void Jump()
     {
+        jump = true;
+    }
+
+    private void ExecuteJump()
+    {
         if (isGrounded)
         {
             float jumpVelocity = Mathf.Sqrt(jumpHeight * -2f * Physics.gravity.y);
-
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpVelocity, rb.linearVelocity.z);
         }
+        
+        jump = false; 
     }
 
     private void ApplyMovement()

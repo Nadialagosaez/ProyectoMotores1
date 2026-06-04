@@ -16,9 +16,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Walk (Cinemachine Bob)")]
     [SerializeField] private CinemachineCamera virtualCamera;
-    [SerializeField] private float idleAmplitude = 0.15f;
-    [SerializeField] private float walkAmplitude = 2.2f;
-    [SerializeField] private float walkFrequency = 1.8f;
+    [SerializeField] private float idleAmplitude = 0.2f;
+    [SerializeField] private float walkAmplitude = 2.8f;
+    [SerializeField] private float walkFrequency = 2.2f;
 
     private Vector2 moveInput;
     private Vector2 lookInput;
