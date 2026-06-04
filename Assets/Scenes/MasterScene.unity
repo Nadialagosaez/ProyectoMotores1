@@ -892,8 +892,8 @@ Light:
   serializedVersion: 12
   m_Type: 0
   m_Color: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
-  m_Intensity: 10
-  m_Range: 120
+  m_Intensity: 15
+  m_Range: 130
   m_SpotAngle: 90
   m_InnerSpotAngle: 30
   m_CookieSize2D: {x: 0.5, y: 0.5}
@@ -2178,6 +2178,7 @@ GameObject:
   - component: {fileID: 1464105618453088233}
   - component: {fileID: 1720477161300347048}
   - component: {fileID: 1881227726836286499}
+  - component: {fileID: 5403731076670136254}
   - component: {fileID: 3740384064366980992}
   - component: {fileID: 5403731076670136253}
   m_Layer: 0
@@ -2318,6 +2319,30 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &5403731076670136254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3841522485248026889}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseListener
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    AmplitudeGain: 1
+    FrequencyGain: 1
+    Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &6834888940749509126
 GameObject:
   m_ObjectHideFlags: 0
