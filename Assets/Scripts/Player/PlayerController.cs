@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Cinemachine;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
@@ -9,29 +10,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerMovement motorMovimiento;
 
     [Header("Humanoid Rotation")]
-    [SerializeField] private float sensitivity = 0.1f;
+    [SerializeField] private float sensitivity = 0.3f;
     [SerializeField] private float maxLookAngle = 80f;
     [Range(0.01f, 0.5f)] [SerializeField] private float smoothTime = 0.05f;
 
-    [Header("Walk (Head Bob)")]
-    [SerializeField] private float bobFrequency = 6f; 
-    [SerializeField] private float bobAmount = 0.1f;    
-    private float bobTimer = 0f;
-    private float defaultCameraY;
+    [Header("Walk (Cinemachine Bob)")]
+    [SerializeField] private CinemachineCamera virtualCamera;
+    [SerializeField] private float idleAmplitude = 0.15f;
+    [SerializeField] private float walkAmplitude = 2.2f;
+    [SerializeField] private float walkFrequency = 1.8f;
 
     private Vector2 moveInput;
     private Vector2 lookInput;
     private float xRotation = 0f;
     private Vector2 currentLookDelta;
     private Vector2 lookSmoothVelocity;
+    private CinemachineBasicMultiChannelPerlin noiseComponent;
 
     void Awake()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        defaultCameraY = cameraTransform.localPosition.y;
 
         if (motorMovimiento == null)
             motorMovimiento = GetComponent<PlayerMovement>();
+
+        if (virtualCamera != null)
+        {
+            noiseComponent = virtualCamera.GetComponent<CinemachineBasicMultiChannelPerlin>();
+        }
     }
 
     public void OnMove(InputAction.CallbackContext context) => moveInput = context.ReadValue<Vector2>();
@@ -39,12 +45,14 @@ public class PlayerController : MonoBehaviour
 
     public void OnJump(InputAction.CallbackContext context)
     {
-        if (context.started && motorMovimiento != null)
+        if (motorMovimiento == null) return;
+
+        if (context.performed)
         {
             motorMovimiento.Jump();
         }
     }
-
+    
     void Update()
     {
         HandleRotation();
@@ -73,23 +81,17 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyHeadBob()
     {
-        if (motorMovimiento == null) return;
+        if (noiseComponent == null || motorMovimiento == null) return;
 
-        if (!motorMovimiento.IsGrounded || moveInput.magnitude == 0 || motorMovimiento.CurrentSpeed < 0.1f)
+        if (motorMovimiento.IsGrounded && moveInput.magnitude > 0 && motorMovimiento.CurrentSpeed > 0.1f)
         {
-            bobTimer = 0;
-            Vector3 restPos = new Vector3(cameraTransform.localPosition.x, Mathf.Lerp(cameraTransform.localPosition.y, defaultCameraY, Time.deltaTime * 10f), cameraTransform.localPosition.z);
-            cameraTransform.localPosition = restPos;
-            return;
+            noiseComponent.AmplitudeGain = Mathf.Lerp(noiseComponent.AmplitudeGain, walkAmplitude, Time.deltaTime * 6f);
+            noiseComponent.FrequencyGain = Mathf.Lerp(noiseComponent.FrequencyGain, walkFrequency, Time.deltaTime * 6f);
         }
-
-        bobTimer += Time.deltaTime * bobFrequency;
-        float bobOffsetY = Mathf.Sin(bobTimer) * bobAmount;
-        
-        cameraTransform.localPosition = new Vector3(
-            cameraTransform.localPosition.x,
-            defaultCameraY + bobOffsetY,
-            cameraTransform.localPosition.z
-        );
+        else
+        {
+            noiseComponent.AmplitudeGain = Mathf.Lerp(noiseComponent.AmplitudeGain, idleAmplitude, Time.deltaTime * 4f);
+            noiseComponent.FrequencyGain = Mathf.Lerp(noiseComponent.FrequencyGain, 0.8f, Time.deltaTime * 4f);
+        }
     }
 }
