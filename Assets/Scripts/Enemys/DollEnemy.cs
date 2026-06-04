@@ -9,14 +9,18 @@ public class DollEnemy : MonoBehaviour
     enum State { Waiting, Retreating }
     private State currentState = State.Waiting;
 
+    [Header("Base Settings")]
     [SerializeField] private string playerTag = "Player";
     [SerializeField] private GameObject dollVisuals;
+    [SerializeField] private float lookDurationRequired = 2f; 
+
+    [Header("Combat & Speed")]
     [SerializeField] private float damageAmount = 15f;
+    [SerializeField] private float attackAnimationSpeed = 1.8f;
     [SerializeField] private float baseCooldown = 5f;
     [SerializeField] private float minCooldown = 1.5f;
     [SerializeField] private float escalationRate = 0.08f;
     [SerializeField] private float retreatDistance = 7f;
-    [SerializeField] private float lookDurationRequired = 2f; 
 
     private Transform target;
     private Camera playerCam;
@@ -24,7 +28,6 @@ public class DollEnemy : MonoBehaviour
     private PlayerSanity playerSanity;
     private CinemachineImpulseSource impulse;
     private Animator animator;
-    
 
     private float currentCooldown;
     private float timeInRoom;
@@ -35,6 +38,7 @@ public class DollEnemy : MonoBehaviour
     {
         agent = GetComponent<NavMeshAgent>();
         impulse = GetComponent<CinemachineImpulseSource>();
+        animator = GetComponent<Animator>();
         playerCam = Camera.main;
         
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
@@ -55,7 +59,6 @@ public class DollEnemy : MonoBehaviour
     {
         if (target == null) return;
 
-        // Siempre mira al jugador
         Vector3 lookDirection = target.position - transform.position;
         lookDirection.y = 0f; 
         if (lookDirection.sqrMagnitude > 0.01f)
@@ -72,8 +75,7 @@ public class DollEnemy : MonoBehaviour
         {
             if (IsPlayerLookingAtMe())
             {
-                // Tiempo de mirada
-                lookTimer += Time.deltaTime; 
+                lookTimer += Time.deltaTime;
                 
                 if (lookTimer >= lookDurationRequired)
                 {
@@ -83,7 +85,7 @@ public class DollEnemy : MonoBehaviour
             }
             else
             {
-                lookTimer = 0f; // Si dejas de mirarla, el temporizador se limpia
+                lookTimer = 0f;
             }
         }
     }
@@ -111,23 +113,38 @@ public class DollEnemy : MonoBehaviour
         canAttack = false;
         
         if (dollVisuals != null) dollVisuals.SetActive(false);
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.15f); // Tiempo oculto略redución para mayor impacto
 
+        // Teletransporte
         Vector3 spawnPosition = target.position + target.forward * 1.5f;
         agent.Warp(spawnPosition); 
         if (dollVisuals != null) dollVisuals.SetActive(true);
-
-        if (animator != null)
-        {
-            animator.SetTrigger("Attack");
-        }
+        
         
         if (playerSanity == null) playerSanity = target.GetComponent<PlayerSanity>();
         playerSanity.TakeDamage(damageAmount);
         if (impulse != null) impulse.GenerateImpulse();
 
-        yield return new WaitForSeconds(0.6f); 
+        if (animator != null)
+        {
+            animator.speed = attackAnimationSpeed; 
+            animator.SetTrigger("Attack");
 
+            yield return null;
+            float baseLength = animator.GetCurrentAnimatorStateInfo(0).length;
+            float actualWaitTime = baseLength / attackAnimationSpeed;
+            
+            yield return new WaitForSeconds(actualWaitTime);
+
+            animator.speed = 1f; 
+        }
+        else
+        {
+            yield return new WaitForSeconds(0.4f);
+        }
+
+
+        // Teletransporte huida
         currentState = State.Retreating;
         if (dollVisuals != null) dollVisuals.SetActive(false); 
 

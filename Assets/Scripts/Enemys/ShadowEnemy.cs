@@ -6,94 +6,74 @@ using System.Collections;
 [RequireComponent(typeof(NavMeshAgent))]
 public class ShadowEnemy : MonoBehaviour
 {
-    enum State { Chasing, Retreating }
-    private State currentState = State.Chasing;
-
+    // 1. SETTINGS (Simplificados al máximo)
+    [Header("Basics")]
     [SerializeField] private string playerTag = "Player";
-    [SerializeField] private float detectionRadius = 15f;
-    [SerializeField] private float damageAmount = 10f;
-    [SerializeField] private float baseCooldown = 4f; 
-    [SerializeField] private float minCooldown = 1f;   
-    [SerializeField] private float escalationRate = 0.05f; 
-    [SerializeField] private float retreatDistance = 5f; 
+    [SerializeField] private float damage = 10f;
+    [SerializeField] private float attackCooldown = 3f;
+    [SerializeField] private float retreatDistance = 8f;
 
-    private Transform target;
+    // 2. REFERENCIAS INTERNAS
+    private Transform playerTarget;
     private NavMeshAgent agent;
     private PlayerSanity playerSanity;
     private CinemachineImpulseSource impulse;
-    
-    private float currentCooldown;
-    private float timeInRoom;
+
+    // 3. ESTADO
+    private bool isRetreating;
     private float nextAttackTime;
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         impulse = GetComponent<CinemachineImpulseSource>();
-        
-        GameObject player = GameObject.FindGameObjectWithTag(playerTag);
-        if (player != null) target = player.transform;
-    }
-
-    private void OnEnable()
-    {
-        timeInRoom = 0f; 
-        currentCooldown = baseCooldown;
-        currentState = State.Chasing;
     }
 
     private void Update()
     {
-        if (target == null) return;
-
-        // Más rápido con el tiempo en la habitación
-        timeInRoom += Time.deltaTime;
-        currentCooldown = Mathf.Max(minCooldown, baseCooldown - (timeInRoom * escalationRate));
-
-        float distance = Vector3.Distance(transform.position, target.position);
-
-        if (currentState == State.Chasing)
+        if (playerTarget == null)
         {
-            if (distance <= detectionRadius)
-            {
-                agent.isStopped = false;
-                agent.SetDestination(target.position);
+            GameObject player = GameObject.FindGameObjectWithTag(playerTag);
+            if (player != null) playerTarget = player.transform;
+            else return; 
+        }
 
-                if (distance <= agent.stoppingDistance && Time.time >= nextAttackTime)
-                {
-                    ExecuteAttack();
-                }
-            }
-            else
-            {
-                agent.isStopped = true;
-            }
+        if (isRetreating)
+        {
+            return;
+        }
+
+        // Perseguir al jugador
+        agent.isStopped = false;
+        agent.SetDestination(playerTarget.position);
+
+        if (Time.time >= nextAttackTime && agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
+        {
+            StartCoroutine(AttackSequence());
         }
     }
 
-    private void ExecuteAttack()
+    private IEnumerator AttackSequence()
     {
-        if (playerSanity == null) playerSanity = target.GetComponent<PlayerSanity>();
+        agent.isStopped = true;
+
         
-        playerSanity.TakeDamage(damageAmount);
+        if (playerSanity == null) playerSanity = playerTarget.GetComponent<PlayerSanity>();
+        playerSanity.TakeDamage(damage);
         if (impulse != null) impulse.GenerateImpulse();
 
-        StartCoroutine(RetreatRoutine());
-    }
-
-    private IEnumerator RetreatRoutine()
-    {
-        currentState = State.Retreating;
-        
-        // Se aleja del jugador en dirección opuesta
-        Vector3 retreatDir = (transform.position - target.position).normalized;
+        // Huida
+        isRetreating = true;
+        Vector3 retreatDir = (transform.position - playerTarget.position).normalized;
         Vector3 retreatPoint = transform.position + retreatDir * retreatDistance;
         
+        agent.isStopped = false;
         agent.SetDestination(retreatPoint);
 
-        yield return new WaitForSeconds(currentCooldown);
-        
+        yield return new WaitForSeconds(attackCooldown);
+
+       
         nextAttackTime = Time.time;
-        currentState = State.Chasing;
+        isRetreating = false;
     }
 }

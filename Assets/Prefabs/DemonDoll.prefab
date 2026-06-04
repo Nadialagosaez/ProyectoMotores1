@@ -10,15 +10,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 4913005085238046036, guid: 259d1de4507c3624c829968c95835990, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.4895382
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4913005085238046036, guid: 259d1de4507c3624c829968c95835990, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.6259813
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4913005085238046036, guid: 259d1de4507c3624c829968c95835990, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.6358694
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4913005085238046036, guid: 259d1de4507c3624c829968c95835990, type: 3}
       propertyPath: m_LocalPosition.x
@@ -117,6 +117,7 @@ MonoBehaviour:
   minCooldown: 1.5
   escalationRate: 0.08
   retreatDistance: 7
+  lookDurationRequired: 2
 --- !u!136 &73115030492034747
 CapsuleCollider:
   m_ObjectHideFlags: 0
