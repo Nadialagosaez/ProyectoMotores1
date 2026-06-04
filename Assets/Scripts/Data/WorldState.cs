@@ -8,6 +8,7 @@ public class WorldState : ScriptableObject
     [SerializeField] private bool _backFromHab3; // Hab3 -> Hab1
     [SerializeField] private bool _hasKey; // Hab4 -> Hab5
     [SerializeField] private bool _msjRead; // Hab5 -> Final
+    [SerializeField] private bool _hasDoll; // Hab3 -> Hab4 (pasando por Hab1?)
 
     [Header("Sistema")]
     [SerializeField] private string _currentRoomName; 
@@ -22,12 +23,14 @@ public class WorldState : ScriptableObject
     public bool msjRead => _msjRead;
     public string currentRoomName => _currentRoomName;
     public int hab1Visits => _hab1Visits;
+    public bool hasDoll => _hasDoll;
 
     // setters
     public void SetZoneCheck(bool state) => _zoneCheck = state;
     public void SetBackFromHab3(bool state) => _backFromHab3 = state;
     public void SetHasKey(bool state) => _hasKey = state;
     public void SetMsjRead(bool state) => _msjRead = state;
+    public void SetHasDoll(bool state) => _hasDoll = state;
     public void SetCurrentRoomName(string name) => _currentRoomName = name;
     public void IncrementHab1Visits() => _hab1Visits++;
 
@@ -37,6 +40,7 @@ public class WorldState : ScriptableObject
         _backFromHab3 = false;
         _hasKey = false;
         _msjRead = false;
+        _hasDoll = false;
         _currentRoomName = "";
         _hab1Visits = 0;
     }
