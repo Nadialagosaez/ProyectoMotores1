@@ -1676,7 +1676,7 @@ MonoBehaviour:
   - {fileID: 1554905924}
   - {fileID: 176885105}
   - {fileID: 312968567}
-  enemyInterval: 14
+  enemyInterval: 6
   maxEnemiesInRoom: 4
   sanityItemPrefab: {fileID: 2064715744436263683, guid: 75320c7079efa49999c6a9727f9d42eb, type: 3}
   sanitySpawnPoints:

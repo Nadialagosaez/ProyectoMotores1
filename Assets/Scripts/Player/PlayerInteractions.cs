@@ -54,6 +54,7 @@ public class PlayerInteractions : MonoBehaviour
                     case "FinalNote":
                         WorldSceneManager.Instance.ProcessInteraction("FinalNote");
                         AudioManager.Instance.PlayPickupItem();
+                        AudioManager.Instance.PlayFinalLoop();
                         break;
 
                     case "ZoneCheck":

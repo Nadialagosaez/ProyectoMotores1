@@ -6,11 +6,13 @@ public class AudioManager : MonoBehaviour
 
     [Header("Fuentes de Audio")]
     [SerializeField] private AudioSource sfxSource;
+    [SerializeField] private AudioSource musicSource;
 
     [Header("Clips de Audio")]
     [SerializeField] private AudioClip pickupItemClip;
     [SerializeField] private AudioClip pickupSanityClip;
     [SerializeField] private AudioClip textPopClip; 
+    [SerializeField] private AudioClip finalWinClip;
 
     private void Awake()
     {
@@ -23,10 +25,27 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public void PlayFinalLoop()
+    {
+        if (musicSource != null && finalWinClip != null)
+        {
+            musicSource.clip = finalWinClip;
+            musicSource.loop = true; // Hacemos que se repita infinitamente
+            musicSource.Play();
+        }
+    }
 
     public void PlayPickupItem() => PlayClip(pickupItemClip);
     public void PlayPickupSanity() => PlayClip(pickupSanityClip);
     public void PlayTextPop() => PlayClip(textPopClip);
+
+    public void StopMusic()
+    {
+        if (musicSource != null)
+        {
+            musicSource.Stop();
+        }
+    }
 
     private void PlayClip(AudioClip clip)
     {
@@ -36,4 +55,5 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip); 
         }
     }
+ 
 }

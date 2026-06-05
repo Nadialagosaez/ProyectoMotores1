@@ -1998,8 +1998,8 @@ MonoBehaviour:
   - {fileID: 1103939379}
   - {fileID: 631830407}
   - {fileID: 1221059619}
-  enemyInterval: 16
-  maxEnemiesInRoom: 2
+  enemyInterval: 12
+  maxEnemiesInRoom: 3
   sanityItemPrefab: {fileID: 2064715744436263683, guid: 75320c7079efa49999c6a9727f9d42eb, type: 3}
   sanitySpawnPoints:
   - {fileID: 907964452}
