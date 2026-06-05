@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 public class PlayerInteractions : MonoBehaviour
 {
     public InputActionReference interactAction; 
-    private PlayerSanity playerSanity; // Guardamos referencia para curarnos al hacer clic
+    private PlayerSanity playerSanity;
+    private int countUntag = 0;
 
     private void Awake()
     {
@@ -30,62 +31,71 @@ public class PlayerInteractions : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit))
             {
-                // Mostrar mensaje en la UI de lo que tocamos
-                if (MessageManager.Instance != null)
-                {
-                    MessageManager.Instance.Show(hit.collider.tag);
-                }
+               string objectTag = hit.collider.tag;
 
-                if (hit.collider.CompareTag("Doll"))
+                switch (objectTag)
                 {
-                    WorldSceneManager.Instance.ProcessInteraction("Doll");
-                    Destroy(hit.collider.gameObject); 
-                }
+                    case "Doll":
+                        if (MessageManager.Instance != null) MessageManager.Instance.Show(objectTag);
+                        WorldSceneManager.Instance.ProcessInteraction("Doll");
+                        Destroy(hit.collider.gameObject);
+                        break;
 
-                if (hit.collider.CompareTag("Key"))
-                {
-                    WorldSceneManager.Instance.ProcessInteraction("Key");
-                    Destroy(hit.collider.gameObject); 
-                }
+                    case "Key":
+                        if (MessageManager.Instance != null) MessageManager.Instance.Show(objectTag);
+                        WorldSceneManager.Instance.ProcessInteraction("Key");
+                        Destroy(hit.collider.gameObject);
+                        break;
 
-                if (hit.collider.CompareTag("FinalNote"))
-                {
-                    WorldSceneManager.Instance.ProcessInteraction("FinalNote");
-                }
+                    case "FinalNote":
+                        if (MessageManager.Instance != null) MessageManager.Instance.Show(objectTag);
+                        WorldSceneManager.Instance.ProcessInteraction("FinalNote");
+                        break;
 
-                if (hit.collider.CompareTag("ZoneCheck"))
-                {
-                    WorldSceneManager.Instance.ProcessInteraction("ZoneCheck");
-                    
-                    Animator anim = hit.collider.GetComponent<Animator>();
-                    if (anim != null)
-                    {
-                        anim.SetBool("Open", true); 
-                    }
-                    else
-                    {
-                        Debug.LogWarning("El objeto ZoneCheck no tiene un componente Animator.");
-                    }
+                    case "ZoneCheck":
+                        if (MessageManager.Instance != null) MessageManager.Instance.Show(objectTag);
+                        WorldSceneManager.Instance.ProcessInteraction("ZoneCheck");
+                        
+                        Animator anim = hit.collider.GetComponent<Animator>();
+                        if (anim != null)
+                        {
+                            anim.SetBool("Open", true); 
+                        }
+                        else
+                        {
+                            Debug.LogWarning("El objeto ZoneCheck no tiene un componente Animator.");
+                        }
+                        hit.collider.enabled = false;
+                        break;
 
-                    hit.collider.enabled = false;
-                }
+                    case "SanityItem":
+                        if (MessageManager.Instance != null) MessageManager.Instance.Show(objectTag);
+                        if (playerSanity != null) 
+                        {
+                            playerSanity.Heal(25f);
+                        }
+                        Destroy(hit.collider.gameObject);
+                        break;
 
-                if (hit.collider.CompareTag("SanityItem"))
-                {
-                    if (playerSanity != null) 
-                    {
-                        playerSanity.Heal(25f);
-                    }
-                    Destroy(hit.collider.gameObject);
+                    default:
+                        if (MessageManager.Instance != null) 
+                        {
+                            if (countUntag < 10)
+                            {
+                                countUntag++;
+                            }
+                            else
+                            {
+                                MessageManager.Instance.Show("Untagged");
+                                countUntag = 0;
+                            }
+                        }
+                        break;
                 }
             }
             else
             {
-
-                if (MessageManager.Instance != null) 
-                {
-                    MessageManager.Instance.Show(null);
-                }
+                 if (MessageManager.Instance != null) MessageManager.Instance.Show(null);
             }
         }
     }
