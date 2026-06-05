@@ -5,26 +5,38 @@ using System.Collections;
 public class WorldSceneManager : MonoBehaviour
 {
     public static WorldSceneManager Instance;
+
+    [Header("Configuración Global")]
     public WorldState worldState; 
     public ScreenFader fader;
+    
     private bool isLoading = false; 
 
     void Awake()
     {
-         if (SceneManager.sceneCount == 1) 
-            {
-                StartCoroutine(LoadSceneRoutine("Hab1"));
-            }
-
         if (Instance == null) 
         { 
             Instance = this; 
-            if (worldState != null) worldState.ResetState(); 
         }
-        else Destroy(gameObject);
+        else 
+        {
+            Destroy(gameObject);
+            return; 
+        }
+
+        if (worldState == null)
+        {
+            Debug.LogError("No has asignado el ScriptableObject 'WorldState' en el Inspector de la MasterScene.");
+            return; 
+        }
+
+        if (SceneManager.sceneCount == 1) 
+        {
+            StartCoroutine(LoadSceneRoutine("Hab1"));
+        }
     }
 
-public void ProcessInteraction(string tag)
+    public void ProcessInteraction(string tag)
     {
         string nextScene = "";
 
@@ -62,7 +74,9 @@ public void ProcessInteraction(string tag)
         }
 
         if (!string.IsNullOrEmpty(nextScene)) 
+        {
             StartCoroutine(LoadSceneRoutine(nextScene));
+        }
     }
 
     private string CalculateNextSceneFromHab1()
@@ -70,13 +84,16 @@ public void ProcessInteraction(string tag)
         if (worldState.hasKey)
         {
             return "Hab5";
-
-        } else if (worldState.backFromHab3) return "Hab4";
+        } 
+        else if (worldState.backFromHab3) 
+        {
+            return "Hab4";
+        }
         
         return "Hab2";
     }
 
-     private string HandleReturnLogic()
+    private string HandleReturnLogic()
     {
         string current = worldState.currentRoomName;
 
@@ -85,7 +102,7 @@ public void ProcessInteraction(string tag)
             return worldState.zoneCheck ? "Hab3" : "Hab1";
         }
 
-       if (current == "Hab3")
+        if (current == "Hab3")
         {
             return worldState.hasDoll ? "Hab4" : "Hab1"; 
         }
@@ -101,15 +118,23 @@ public void ProcessInteraction(string tag)
             {
                 return "WinScene";
             }
-            //sin leer nota vuelvo a 1
+            // Sin leer nota vuelvo a la Hab1
             return "Hab1";
         }
 
         return "Hab1";
     }
+
     public IEnumerator LoadSceneRoutine(string sceneName)
     {
         if (string.IsNullOrEmpty(sceneName) || isLoading) yield break;
+        
+        if (worldState == null)
+        {
+            Debug.LogError("No se puede iniciar la carga porque 'worldState' es null.");
+            yield break;
+        }
+
         isLoading = true;
 
         if (sceneName == "WinScene" || sceneName == "GameOverScene")
@@ -120,12 +145,10 @@ public void ProcessInteraction(string tag)
             }
             
             StopAllCoroutines();
-            
             SceneManager.LoadScene(sceneName);
             yield break; 
         }
 
-       
         string previousScene = worldState.currentRoomName;
 
         AsyncOperation loadOp = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
@@ -134,8 +157,6 @@ public void ProcessInteraction(string tag)
         yield return new WaitForEndOfFrame();
 
         HandlePlayerTeleport(sceneName); 
-
-       
     
         if (!string.IsNullOrEmpty(previousScene) && previousScene != sceneName)
         {
@@ -150,8 +171,10 @@ public void ProcessInteraction(string tag)
                 Debug.LogWarning("Se intentó descargar " + previousScene + " pero no estaba cargada.");
             }
         }
+
         worldState.SetCurrentRoomName(sceneName);
 
+        // Eventos específicos al entrar a la Habitación 1
         if (sceneName == "Hab1")
         {
             ClockLoop clock = FindFirstObjectByType<ClockLoop>();
@@ -159,18 +182,18 @@ public void ProcessInteraction(string tag)
             {
                 clock.ReiniciarReloj();
             }
-            if (worldState != null) // Asegúrate de tener la referencia a tu WorldState en este script
-            {
-                worldState.IncrementHab1Visits();
-            }
+            
+            worldState.IncrementHab1Visits();
         }
         
-        if (fader != null) yield return StartCoroutine(fader.FadeIn());
+        if (fader != null) 
+        {
+            yield return StartCoroutine(fader.FadeIn());
+        }
 
         isLoading = false; 
     }
 
-   
     private void HandlePlayerTeleport(string sceneName)
     {
         GameObject spawn = GameObject.Find("SpawnPoint" + sceneName);
@@ -187,25 +210,16 @@ public void ProcessInteraction(string tag)
         if (rb != null)
         {
             rb.isKinematic = true; 
-        }
-
-        // Mantén esto por si acaso quedara algún CharacterController viejo en el proyecto
-        // CharacterController cc = player.GetComponent<CharacterController>();
-        // if (cc != null) cc.enabled = false; 
+        } 
 
         player.transform.position = spawn.transform.position;
         player.transform.rotation = spawn.transform.rotation;
 
-        // 3. Devolvemos el control al motor de físicas limpiando inercias anteriores
-        //if (cc != null) cc.enabled = true;
-
         if (rb != null)
         {
             rb.isKinematic = false;
-            
             rb.linearVelocity = Vector3.zero;  
             rb.angularVelocity = Vector3.zero;
-            
             rb.position = spawn.transform.position;
             rb.rotation = spawn.transform.rotation;
         }
