@@ -13,7 +13,7 @@ TagManager:
   - Enemy
   - Clock
   - Doll
-  - MedicalBox
+  - SanityItem
   layers:
   - Default
   - TransparentFX

@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SubtractiveShadowColor: {r: 0, g: 0, b: 0, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 51b74d7bad397457d883c5940f7664d8, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -722,6 +722,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 596378207}
+  - component: {fileID: 596378208}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -747,6 +748,28 @@ Transform:
   - {fileID: 1968985186}
   m_Father: {fileID: 1968985184}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &596378208
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596378206}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b5bc5b0b8f28ed54691ddf2ee184bc2e, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &689109152
 GameObject:
   m_ObjectHideFlags: 0
@@ -1475,14 +1498,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RoomDirector
   enemyPrefabs:
-  - {fileID: 7381399757056095685, guid: 3aaadfa0bf78d4b0c870ccb0efc78b2f, type: 3}
+  - {fileID: 9087960973621592285, guid: 4b268189273c148a8a6706d68ec57d4f, type: 3}
   spawnPoints:
   - {fileID: 512754134}
   - {fileID: 366831366}
   - {fileID: 170086511}
   - {fileID: 1455937465}
   enemyInterval: 9
-  maxEnemiesInRoom: 3
+  maxEnemiesInRoom: 2
   sanityItemPrefab: {fileID: 2064715744436263683, guid: 75320c7079efa49999c6a9727f9d42eb, type: 3}
   sanitySpawnPoints:
   - {fileID: 535409204}

@@ -87,7 +87,7 @@ public void ProcessInteraction(string tag)
 
        if (current == "Hab3")
         {
-            return worldState.hasDoll ? "Hab1" : "Hab4"; 
+            return worldState.hasDoll ? "Hab4" : "Hab1"; 
         }
 
         if (current == "Hab4")

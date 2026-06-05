@@ -25,8 +25,8 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SubtractiveShadowColor: {r: 0, g: 0, b: 0, a: 1}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 51b74d7bad397457d883c5940f7664d8, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -1983,13 +1983,13 @@ MonoBehaviour:
   - {fileID: 631830407}
   - {fileID: 1221059619}
   enemyInterval: 8
-  maxEnemiesInRoom: 4
+  maxEnemiesInRoom: 2
   sanityItemPrefab: {fileID: 2064715744436263683, guid: 75320c7079efa49999c6a9727f9d42eb, type: 3}
   sanitySpawnPoints:
   - {fileID: 907964452}
   - {fileID: 11245759}
   - {fileID: 514043155}
-  sanitySpawnInterval: 16
+  sanitySpawnInterval: 12
 --- !u!4 &1134195714
 Transform:
   m_ObjectHideFlags: 0
