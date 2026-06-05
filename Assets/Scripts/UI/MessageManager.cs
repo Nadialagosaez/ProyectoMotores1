@@ -21,20 +21,26 @@ public class MessageManager : MonoBehaviour
     [Header("Messages")]
     [SerializeField] private List<TagMessage> tagMessagesList = new List<TagMessage>();
     [SerializeField] private string defaultMessage = "Debo encontrar la salida...";
-    [SerializeField] private List<string> noTagMessages = new List<string> { "No hay nada aquí", "Sigue buscando...", "Todavía nada", "Creo que me vigilan...", "¿Dónde estoy?" };
+    [SerializeField] private List<string> noTagMessages = new List<string> { "No hay nada aquí...", "Sigue buscando...", "Todavía nada..." };
 
-    [Header("Mensajes de Daño/Cordura")]
-    [SerializeField] private List<string> damageMessages = new List<string> {"¡Déjame en paz!", "¿Qué ha sido eso?", "¡No puedo soportarlo!", "Perderé la cabeza...", "Quien soy?"};
+    [Header("Messages on Damage")]
+    [SerializeField] private List<string> damageMessages = new List<string> {"Déjame en paz!", "Qué ha sido eso?", "Debo salir de aquí!"};
+
+    [Header("Generic Clicks")]
+    [SerializeField] private int necesaryClicks = 10;
+    private int counterClicks = 0;
+
+   [SerializeField] private PlayerSanity playerSanity;
 
     private Dictionary<string, string> tagMessages = new Dictionary<string, string>();
     private Queue<string> messageQueue = new Queue<string>();
     private bool isShowing = false;
     private float messageEndTime = 0f;
+    private string currentActiveMessage = ""; 
 
-    // Controles de repetición
     private bool hasShownDefaultNoTag = false;
-    private string lastNoTagMessage = null;
-    private string lastDamageMessage = null; 
+    private string lastNoTagMessage = "";
+    private string lastDamageMessage = ""; 
 
     void Awake()
     {
@@ -44,7 +50,6 @@ public class MessageManager : MonoBehaviour
         }
         else 
         { 
-            Debug.LogWarning("Ya existe una instancia de MessageManager. Destruyendo el duplicado.");
             Destroy(gameObject); 
             return; 
         }
@@ -63,84 +68,86 @@ public class MessageManager : MonoBehaviour
         if (isShowing && Time.time >= messageEndTime)
         {
             isShowing = false;
+            currentActiveMessage = "";
             DisplayNextMessage();
         }
     }
 
     public void Show(string tag)
     {
-        string messageToShow;
-
         if (!string.IsNullOrEmpty(tag) && tagMessages.TryGetValue(tag, out string taggedMsg))
         {
-            messageToShow = taggedMsg;
             if (tag == "Clock" && worldState != null && worldState.hab1Visits > 1)
             {
-                messageToShow = "Parece que el tiempo no pasa aquí...";
+                taggedMsg = "Parece que el tiempo no pasa aquí...";
             }
+
+            if (tag == "SanityItem" && playerSanity != null && playerSanity.CurrentSanity < 100)
+            {
+                taggedMsg = "Me siento mejor con esto...";
+            }
+
+            EnqueueAndTryShow(taggedMsg);
+            return; 
         }
-        else 
+
+        counterClicks++;
+
+        if (counterClicks < necesaryClicks)
         {
-            if (!hasShownDefaultNoTag)
-            {
-                messageToShow = defaultMessage;
-                hasShownDefaultNoTag = true;
-                lastNoTagMessage = defaultMessage; 
-
-                if (!noTagMessages.Contains(defaultMessage)) noTagMessages.Add(defaultMessage);
-            }
-            else
-            {
-                messageToShow = GetRandomNoTagMessage();
-            }
+            return;
         }
 
+        counterClicks = 0;
+        
+        string messageToShow = GetGenericMessage();
         EnqueueAndTryShow(messageToShow);
+    }
+
+    private string GetGenericMessage()
+    {
+        if (!hasShownDefaultNoTag)
+        {
+            hasShownDefaultNoTag = true;
+            return defaultMessage;
+        }
+
+        if (noTagMessages.Count == 0) return defaultMessage;
+
+        int index = Random.Range(0, noTagMessages.Count);
+        string randomMsg = noTagMessages[index];
+
+        if (randomMsg == lastNoTagMessage && noTagMessages.Count > 1)
+        {
+            index = (index + 1) % noTagMessages.Count;
+            randomMsg = noTagMessages[index];
+        }
+
+        lastNoTagMessage = randomMsg;
+        return randomMsg;
     }
 
     public void ShowDamageMessage()
     {
         if (damageMessages == null || damageMessages.Count == 0) return;
 
-        string messageToShow;
+        int index = Random.Range(0, damageMessages.Count);
+        string dmgMsg = damageMessages[index];
 
-        if (damageMessages.Count == 1)
+        if (dmgMsg == lastDamageMessage && damageMessages.Count > 1)
         {
-            messageToShow = damageMessages[0];
-        }
-        else
-        {
-            int index = Random.Range(0, damageMessages.Count);
-            
-            while (damageMessages[index] == lastDamageMessage)
-            {
-                index = Random.Range(0, damageMessages.Count);
-            }
-
-            lastDamageMessage = damageMessages[index];
-            messageToShow = lastDamageMessage;
+            index = (index + 1) % damageMessages.Count;
+            dmgMsg = damageMessages[index];
         }
 
-        EnqueueAndTryShow(messageToShow);
-    }
-
-    private string GetRandomNoTagMessage()
-    {
-        if (noTagMessages == null || noTagMessages.Count == 0) return defaultMessage;
-        if (noTagMessages.Count == 1) return noTagMessages[0];
-
-        int index = Random.Range(0, noTagMessages.Count);
-        while (noTagMessages[index] == lastNoTagMessage)
-        {
-            index = Random.Range(0, noTagMessages.Count);
-        }
-
-        lastNoTagMessage = noTagMessages[index];
-        return lastNoTagMessage;
+        lastDamageMessage = dmgMsg;
+        EnqueueAndTryShow(dmgMsg);
     }
 
     private void EnqueueAndTryShow(string msg)
     {
+        if (currentActiveMessage == msg || messageQueue.Contains(msg)) return;
+
         messageQueue.Enqueue(msg);
         if (!isShowing)
         {
@@ -153,7 +160,6 @@ public class MessageManager : MonoBehaviour
         if (messageQueue.Count == 0) return;
 
         string msg = messageQueue.Dequeue();
-        
         if (messagePrefab == null) return;
 
         if (uiParent == null)
@@ -168,6 +174,7 @@ public class MessageManager : MonoBehaviour
         if (ui != null)
         {
             isShowing = true;
+            currentActiveMessage = msg;
             messageEndTime = Time.time + ui.displayDuration;
             ui.Play(msg);
         }
@@ -179,17 +186,9 @@ public class MessageManager : MonoBehaviour
 
     public void UpdateTagMessage(string tag, string newMessage)
     {
-        // Modifico diccionario
-        if (tagMessages.ContainsKey(tag))
-        {
-            tagMessages[tag] = newMessage;
-        }
-        else
-        {
-            tagMessages.Add(tag, newMessage);
-        }
+        if (tagMessages.ContainsKey(tag)) tagMessages[tag] = newMessage;
+        else tagMessages.Add(tag, newMessage);
 
-        // Actualizo inspector
         for (int i = 0; i < tagMessagesList.Count; i++)
         {
             if (tagMessagesList[i].tag == tag)

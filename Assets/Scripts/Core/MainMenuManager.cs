@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using UnityEngine.InputSystem;
+using Unity.Cinemachine;
 
 public class MainMenuManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class MainMenuManager : MonoBehaviour
     [Header("UI de Pausa")]
     [SerializeField] private GameObject pausePanel; 
 
+    [SerializeField] private CinemachineCamera vCam;
     private bool isPaused = false;
 
     void Update()
@@ -56,6 +58,7 @@ public class MainMenuManager : MonoBehaviour
         if (isPaused)
         {
             Time.timeScale = 0f;
+            if (vCam != null) vCam.enabled = false;
             
             if (pausePanel != null) pausePanel.SetActive(true);
             
@@ -65,7 +68,8 @@ public class MainMenuManager : MonoBehaviour
         else
         {
             Time.timeScale = 1f; 
-            
+            if (vCam != null) vCam.enabled = true;
+
             if (pausePanel != null) pausePanel.SetActive(false); // Oculta el cartel
             
             
