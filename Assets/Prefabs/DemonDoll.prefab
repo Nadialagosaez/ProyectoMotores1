@@ -87,6 +87,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4913005085238046037, guid: 259d1de4507c3624c829968c95835990, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8384237121480030150}
+    - targetCorrespondingSourceObject: {fileID: 4913005085238046037, guid: 259d1de4507c3624c829968c95835990, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8482551644711761977}
+    - targetCorrespondingSourceObject: {fileID: 4913005085238046037, guid: 259d1de4507c3624c829968c95835990, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2799642859175220291}
   m_SourcePrefab: {fileID: 100100000, guid: 259d1de4507c3624c829968c95835990, type: 3}
 --- !u!1 &6306531152363093019 stripped
 GameObject:
@@ -112,12 +118,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DollEnemy
   playerTag: Player
   dollVisuals: {fileID: 6306531152363093019}
+  lookDurationRequired: 2
   damageAmount: 15
+  attackAnimationSpeed: 1.8
   baseCooldown: 5
   minCooldown: 1.5
   escalationRate: 0.08
   retreatDistance: 7
-  lookDurationRequired: 2
 --- !u!136 &73115030492034747
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -238,3 +245,114 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!82 &8482551644711761977
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087960973621592285}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: -6083937945592161655, guid: 33a630ae04e5d451bbdc727b4ab732f4, type: 2}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 20
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &2799642859175220291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087960973621592285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 703be2fabf2484de597e8c10c7bacf09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAudio
+  audioSource: {fileID: 8482551644711761977}
+  attackClip: {fileID: 8300000, guid: a39f01f5ff882451a8eabbc7ed96b2af, type: 3}

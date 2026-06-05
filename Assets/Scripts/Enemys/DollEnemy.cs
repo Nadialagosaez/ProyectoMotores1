@@ -125,6 +125,13 @@ public class DollEnemy : MonoBehaviour
         playerSanity.TakeDamage(damageAmount);
         if (impulse != null) impulse.GenerateImpulse();
 
+        EnemyAudio enemyAudio = GetComponent<EnemyAudio>();
+
+        if (enemyAudio != null)
+        {
+            enemyAudio.PlayAttackSound();
+        }
+        
         if (animator != null)
         {
             animator.speed = attackAnimationSpeed; 

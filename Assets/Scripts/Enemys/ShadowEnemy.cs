@@ -62,6 +62,13 @@ public class ShadowEnemy : MonoBehaviour
         playerSanity.TakeDamage(damage);
         if (impulse != null) impulse.GenerateImpulse();
 
+        EnemyAudio enemyAudio = GetComponent<EnemyAudio>();
+
+        if (enemyAudio != null)
+        {
+            enemyAudio.PlayAttackSound();
+        }
+
         // Huida
         isRetreating = true;
         Vector3 retreatDir = (transform.position - playerTarget.position).normalized;
