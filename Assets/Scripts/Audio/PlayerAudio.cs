@@ -56,6 +56,8 @@ public class PlayerAudio : MonoBehaviour
 
     void Update()
     {
+        if (!WorldSceneManager.IsGameReady) return;
+        
         ControlarPasos();
         ControlarAmbienteCordura();
     }
