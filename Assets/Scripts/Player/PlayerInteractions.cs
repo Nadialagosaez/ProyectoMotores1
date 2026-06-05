@@ -41,27 +41,33 @@ public class PlayerInteractions : MonoBehaviour
                 {
                     case "Doll":
                         WorldSceneManager.Instance.ProcessInteraction("Doll");
+                        AudioManager.Instance.PlayPickupItem();
                         Destroy(hit.collider.gameObject);
                         break;
 
                     case "Key":
                         WorldSceneManager.Instance.ProcessInteraction("Key");
+                        AudioManager.Instance.PlayPickupItem();
                         Destroy(hit.collider.gameObject);
                         break;
 
                     case "FinalNote":
                         WorldSceneManager.Instance.ProcessInteraction("FinalNote");
+                        AudioManager.Instance.PlayPickupItem();
+                        AudioManager.Instance.PlayFinalLoop();
                         break;
 
                     case "ZoneCheck":
                         WorldSceneManager.Instance.ProcessInteraction("ZoneCheck");
-                        Animator anim = hit.collider.GetComponent<Animator>();
-                        if (anim != null) anim.SetBool("Open", true); 
+                        AudioManager.Instance.PlayPickupItem();
+                        // Animator anim = hit.collider.GetComponent<Animator>();
+                        // if (anim != null) anim.SetBool("Open", true); 
                         hit.collider.enabled = false;
                         break;
 
                     case "SanityItem":
                         if (playerSanity != null) playerSanity.Heal(25f);
+                        AudioManager.Instance.PlayPickupSanity();
                         Destroy(hit.collider.gameObject);
                         break;
                 }

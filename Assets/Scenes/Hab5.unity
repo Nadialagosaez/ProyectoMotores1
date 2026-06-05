@@ -1676,7 +1676,7 @@ MonoBehaviour:
   - {fileID: 1554905924}
   - {fileID: 176885105}
   - {fileID: 312968567}
-  enemyInterval: 14
+  enemyInterval: 6
   maxEnemiesInRoom: 4
   sanityItemPrefab: {fileID: 2064715744436263683, guid: 75320c7079efa49999c6a9727f9d42eb, type: 3}
   sanitySpawnPoints:
@@ -2113,6 +2113,30 @@ PrefabInstance:
     - target: {fileID: 736396707783851490, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976066566274824851, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2.5451763
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976066566274824851, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2.5116642
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976066566274824851, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.44828528
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976066566274824851, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.29
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976066566274824851, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.33
+      objectReference: {fileID: 0}
+    - target: {fileID: 3976066566274824851, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -10.704
       objectReference: {fileID: 0}
     - target: {fileID: 5700371118650952097, guid: c80cacd61db8c47da80b7f8f02ef18f8, type: 3}
       propertyPath: m_Name

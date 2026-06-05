@@ -69,6 +69,7 @@ public class WorldSceneManager : MonoBehaviour
 
             case "FinalNote":
                 worldState.SetMsjRead(true);
+                AudioManager.Instance.PlayFinalLoop();
                 Debug.Log("Mensaje leido");
                 return; 
         }
@@ -144,6 +145,8 @@ public class WorldSceneManager : MonoBehaviour
                 yield return StartCoroutine(fader.FadeOut()); 
             }
             
+            if (AudioManager.Instance != null) AudioManager.Instance.StopMusic();
+
             StopAllCoroutines();
             SceneManager.LoadScene(sceneName);
             yield break; 
