@@ -4,7 +4,7 @@ using System.Collections;
 public class ScreenFader : MonoBehaviour
 {
     private CanvasGroup canvasGroup;
-    public float fadeDuration = 1.0f;
+    public float fadeDuration = 0.1f;
 
     void Awake()
     {

@@ -412,11 +412,11 @@ Transform:
   m_GameObject: {fileID: 92084969}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 808.28687, y: -0.8617101, z: 500.84894}
+  m_LocalPosition: {x: 812.8921, y: 2.08139, z: 501.99988}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1130487673}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &92084971
 MonoBehaviour:
@@ -910,7 +910,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 358f2873713f04454847d0eb48b4d7fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScreenFader
-  fadeDuration: 0.5
+  fadeDuration: 0.02
 --- !u!225 &422244071
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -6923,38 +6923,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!1 &1130487672
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1130487673}
-  m_Layer: 0
-  m_Name: --WoldManager--
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1130487673
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1130487672}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.6052, y: 2.9431, z: 1.15093}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 92084970}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1145318717
 GameObject:
   m_ObjectHideFlags: 0
@@ -9118,7 +9086,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1681652729}
   - {fileID: 595808308}
-  - {fileID: 1130487673}
-  - {fileID: 1464105618453088233}
   - {fileID: 259634574}
   - {fileID: 950980123}
+  - {fileID: 1464105618453088233}
+  - {fileID: 92084970}

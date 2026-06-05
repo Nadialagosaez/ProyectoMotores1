@@ -17,5 +17,5 @@ MonoBehaviour:
   _hasKey: 0
   _msjRead: 0
   _hasDoll: 0
-  _currentRoomName: 
-  _hab1Visits: 0
+  _currentRoomName: Hab1
+  _hab1Visits: 1
