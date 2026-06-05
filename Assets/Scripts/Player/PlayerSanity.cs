@@ -39,12 +39,12 @@ public class PlayerSanity : MonoBehaviour
     }
 
     // Método para curar cordura (analizar si completa o solo un poco)
-    public void Heal(float amount)
-    {
-        currentSanity += amount;
-        currentSanity = Mathf.Clamp(currentSanity, 0, maxSanity);
-        OnSanityChanged?.Invoke(currentSanity, maxSanity);
-    }
+   public void Heal(float amount)
+{
+    currentSanity += amount;
+    currentSanity = Mathf.Clamp(currentSanity, 0, maxSanity);
+    OnSanityChanged?.Invoke(currentSanity, maxSanity); 
+}
 
     private void GameOver()
     {
